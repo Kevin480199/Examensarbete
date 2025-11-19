@@ -1,31 +1,36 @@
 import {createRoot} from 'react-dom/client';
 import GoogleLoginButton from './components/GoogleLoginButton';
-
+import Navbar from './components/Navbar';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import MyListings from "./pages/MyListings";
+import AddListing from "./pages/AddListing";
+import { AuthProvider } from './hooks/useAuth';
 
 function App(){
-    function handleGoogleToken(idToken) {
-  console.log("Google ID token:", idToken);
-
-  // Example: send to backend
-  fetch("http://localhost:8080/api/auth/google", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ idToken })
-  })
-    .then(res => res.text())
-    .then(jwt => {
-      console.log("JWT from backend:", jwt);
-    });
-}
-
+    
     return(
         <div>
-            <GoogleLoginButton onLogin={handleGoogleToken}/>
+            <Navbar/>
+            
         </div>
     )
 }
 
 const root = createRoot( document.querySelector("#root") );
-root.render(<App/>); 
+root.render(
+  <BrowserRouter>
+    <AuthProvider>
+        <App />
+        <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/add" element={<AddListing />} />
+            <Route path="/my-listings" element={<MyListings />} />
+        </Routes>
+    </AuthProvider>
+    
+  </BrowserRouter>
+);

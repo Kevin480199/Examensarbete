@@ -1,6 +1,7 @@
 package org.example.secondhandwebshop.controller;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.example.secondhandwebshop.dto.ProductRequest;
 import org.example.secondhandwebshop.model.Product;
 import org.example.secondhandwebshop.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("/api/products")
 @Validated
+@CrossOrigin(origins = "http://localhost:1234")
 public class ProductController {
 
     @Autowired
@@ -31,14 +33,19 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addProduct(@Validated @RequestBody Product product) {
-        try{
-            productService.save(product);
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        }catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> addProduct(@RequestBody ProductRequest request) {
+        try {
+            Product product = productService.createProduct(request);
+            return new ResponseEntity<>(product, HttpStatus.CREATED);
+
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error creating product", HttpStatus.BAD_REQUEST);
         }
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateProduct(@Validated @RequestBody Product product, @PathVariable Integer id) {
