@@ -32,6 +32,7 @@ public class AuthService {
                     newUser.setEmail(email);
                     newUser.setName((String) payload.get("name"));
                     newUser.setPictureUrl((String) payload.get("picture"));
+                    newUser.setGoogleId((String) payload.get("sub"));
                     return userRepository.save(newUser);
                 });
 

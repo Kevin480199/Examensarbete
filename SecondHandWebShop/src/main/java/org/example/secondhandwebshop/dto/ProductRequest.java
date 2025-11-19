@@ -1,43 +1,12 @@
-package org.example.secondhandwebshop.model;
+package org.example.secondhandwebshop.dto;
 
-import jakarta.persistence.*;
-
-@Entity
-public class Product {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @Column(unique = true, nullable = false)
+public class ProductRequest {
     private String name;
-    @Column(nullable = false)
     private String description;
-    @Column(nullable = false)
     private String imageUrl;
-    @Column(nullable = true)
     private double price;
-    @Column(nullable = false)
     private String category;
-    @ManyToOne
-    @JoinColumn(name = "seller_id")
-    private User seller;
-
-    public User getSeller() {
-        return seller;
-    }
-
-    public void setSeller(User seller) {
-        this.seller = seller;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    private Integer userId;
 
     public String getName() {
         return name;
@@ -77,5 +46,13 @@ public class Product {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 }
