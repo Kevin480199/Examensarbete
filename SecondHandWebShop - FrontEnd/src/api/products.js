@@ -23,3 +23,15 @@ export async function createProduct(product) {
   const text = await response.text();
   return text ? JSON.parse(text) : null
 }
+
+export async function deleteProduct(id) {
+    console.log(id)
+  const response = await fetch(`http://localhost:8080/api/products/${id}`, {
+    method: "DELETE"
+  });
+
+  if (!response.ok) throw new Error("Failed to create product");
+  // If the backend returns empty body → don't parse JSON
+  const text = await response.text();
+  return text ? JSON.parse(text) : null
+}

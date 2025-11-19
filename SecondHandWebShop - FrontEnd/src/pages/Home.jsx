@@ -34,6 +34,7 @@ export default function Home() {
             <img src={`${product.imageUrl}`} alt="" width={250}/>
             <p>{product.description}</p>
             <p><strong>{product.price} kr</strong></p>
+            <button id="Buy">Buy</button>
           </div>
         ))}
       </div>
