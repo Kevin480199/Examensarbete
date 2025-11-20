@@ -5,7 +5,6 @@ import org.example.secondhandwebshop.dto.ProductRequest;
 import org.example.secondhandwebshop.model.Product;
 import org.example.secondhandwebshop.model.User;
 import org.example.secondhandwebshop.repository.ProductRepository;
-import org.example.secondhandwebshop.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -61,5 +60,9 @@ public class ProductService {
         product.setSeller(seller);
 
         return productRepository.save(product);
+    }
+
+    public Optional<Product> findById(int id) {
+        return productRepository.findById(id);
     }
 }

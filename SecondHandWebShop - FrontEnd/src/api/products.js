@@ -35,3 +35,20 @@ export async function deleteProduct(id) {
   const text = await response.text();
   return text ? JSON.parse(text) : null
 }
+
+export async function getProductById(id) {
+  const response = await fetch(`${API_URL}/api/products/${id}`);
+  if (!response.ok) throw new Error("Failed to load product");
+  return response.json();
+}
+
+export async function updateProduct(id, product) {
+  const response = await fetch(`${API_URL}/api/products/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(product)
+  });
+
+  if (!response.ok) throw new Error("Failed to update product");
+  return response.json();
+}

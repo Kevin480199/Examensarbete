@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getAllProducts, deleteProduct } from "../api/products";
 import useAuth from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 
 export default function MyListings() {
@@ -8,6 +9,8 @@ export default function MyListings() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user, jwt, isLoggedIn } = useAuth();
+  const navigate = useNavigate();
+
   const handleOnClick = async (id) => {
     try {
     await deleteProduct(id);
@@ -46,6 +49,7 @@ export default function MyListings() {
             <p>{product.description}</p>
             <p><strong>{product.price} kr</strong></p>
             <button onClick={() => handleOnClick(product.id)}>Delete</button>
+            <button onClick={() => navigate(`/edit/${product.id}`)}>Edit</button>
           </div>
         ))}
       </div>

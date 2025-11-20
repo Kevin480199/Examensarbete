@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/products")
@@ -30,6 +31,11 @@ public class ProductController {
 
         }
         return productService.findAll();
+    }
+    @GetMapping("/{id}")
+    public Optional<Product> getProduct(@PathVariable int id) {
+
+        return productService.findById(id);
     }
 
     @PostMapping

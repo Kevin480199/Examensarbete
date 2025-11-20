@@ -38,17 +38,17 @@ export default function AddListing() {
       <h1>Add Product</h1>
 
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", width: "300px", gap: "10px" }}>
-        <input name="name" placeholder="Name" onChange={handleChange} />
-        <select name="category" id="" onChange={handleChange}>
+        <input name="name" placeholder="Name" onChange={handleChange} required/>
+        <select name="category" id="" onChange={handleChange} required>
             <option value="">SELECT AN OPTION</option>
             <option value="Electronics">Electronics</option>
             <option value="Vehicle">Vehicle</option>
             <option value="Clothes">Clothes</option>
             <option value="Other">Other</option>
         </select>
-        <textarea name="description" placeholder="Description" onChange={handleChange} />
-        <input name="price" type="number" placeholder="Price" onChange={handleChange} />
-        <input name="imageUrl" placeholder="Image URL" onChange={handleChange} />
+        <textarea name="description" placeholder="Description" onChange={handleChange} required />
+        <input name="price" type="number" placeholder="Price" onChange={handleChange} required/>
+        <input name="imageUrl" placeholder="Image URL" onChange={handleChange} required/>
 
         <button type="submit">Create</button>
       </form>

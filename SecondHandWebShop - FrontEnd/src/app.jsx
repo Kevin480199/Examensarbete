@@ -1,5 +1,4 @@
 import {createRoot} from 'react-dom/client';
-import GoogleLoginButton from './components/GoogleLoginButton';
 import Navbar from './components/Navbar';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
@@ -7,6 +6,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import MyListings from "./pages/MyListings";
 import AddListing from "./pages/AddListing";
+import EditProduct from "./pages/EditProduct";
 import { AuthProvider } from './hooks/useAuth';
 
 function App(){
@@ -29,6 +29,7 @@ root.render(
             <Route path="/login" element={<Login />} />
             <Route path="/add" element={<AddListing />} />
             <Route path="/my-listings" element={<MyListings />} />
+            <Route path="/edit/:id" element={<EditProduct />} />
         </Routes>
     </AuthProvider>
     
