@@ -5,6 +5,8 @@ import org.example.secondhandwebshop.dto.ProductRequest;
 import org.example.secondhandwebshop.model.Product;
 import org.example.secondhandwebshop.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -22,7 +24,7 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
-
+    /*
     @GetMapping
     public List<Product> getProducts(@RequestParam(required = false) String name) {
         if (name != null && !name.isEmpty()) {
@@ -32,6 +34,15 @@ public class ProductController {
         }
         return productService.findAll();
     }
+     */
+    @GetMapping
+    public Page<Product> getProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return productService.findAll(PageRequest.of(page, size));
+    }
+
     @GetMapping("/{id}")
     public Optional<Product> getProduct(@PathVariable int id) {
 

@@ -24,7 +24,7 @@ export default function MyListings() {
     async function loadProducts() {
       try {
         const data = await getAllProducts();
-        setProducts(data.filter(product => product.seller?.id === user.id));
+        setProducts(data.content.filter(product => product.seller?.id === user.id));
         console.log(products)
       } catch (err) {
         setError(err.message);

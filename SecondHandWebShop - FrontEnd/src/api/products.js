@@ -52,3 +52,9 @@ export async function updateProduct(id, product) {
   if (!response.ok) throw new Error("Failed to update product");
   return response.json();
 }
+
+export async function getProductsPaginated(page, size = 4) {
+  const res = await fetch(`http://localhost:8080/api/products?page=${page}&size=${size}`);
+  if (!res.ok) throw new Error("Failed to load products");
+  return res.json(); // returns a Page object
+}
