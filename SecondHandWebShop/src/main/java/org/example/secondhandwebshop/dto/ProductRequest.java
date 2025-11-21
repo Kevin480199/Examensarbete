@@ -7,6 +7,15 @@ public class ProductRequest {
     private double price;
     private String category;
     private Integer userId;
+    private boolean available;
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
 
     public String getName() {
         return name;

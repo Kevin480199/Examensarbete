@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getAllProducts, deleteProduct } from "../api/products";
 import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import Toast from "../components/Toast";
 
 export default function MyListings() {
   const [products, setProducts] = useState([]);
@@ -63,11 +64,26 @@ export default function MyListings() {
             >
               <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
 
+              <div className="relative">
               <img
                 src={product.imageUrl}
-                alt=""
-                className="w-full h-48 object-cover rounded-lg mb-3"
+                alt={product.name}
+                className="w-full h-48 object-cover rounded-md mb-4"
               />
+
+              {!product.available && (
+                <span className="
+                  absolute inset-0 
+                  bg-black/50 
+                  flex items-center justify-center 
+                  text-white text-xl font-bold
+                  rounded-md
+                ">
+                  SOLD
+                </span>
+              )}
+            </div>
+
 
               <p className="text-gray-700 mb-2">{product.description}</p>
 
@@ -83,12 +99,12 @@ export default function MyListings() {
                   Delete
                 </button>
 
-                <button
+                {product.available && <button
                   onClick={() => navigate(`/edit/${product.id}`)}
                   className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-lg transition"
                 >
                   Edit
-                </button>
+                </button>}
               </div>
             </div>
           ))}

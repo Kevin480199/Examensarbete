@@ -77,6 +77,13 @@ public class ProductController {
         }
     }
 
+    @PutMapping("/{id}/sold")
+    public ResponseEntity<?> markAsSold(@PathVariable Integer id) {
+        productService.updateAvailable(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Integer id) {
         try{

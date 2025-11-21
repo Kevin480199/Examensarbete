@@ -19,9 +19,19 @@ public class Product {
     private double price;
     @Column(nullable = false)
     private String category;
+    @Column(nullable = false)
+    private boolean available;
     @ManyToOne
     @JoinColumn(name = "seller_id")
     private User seller;
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
 
     public User getSeller() {
         return seller;

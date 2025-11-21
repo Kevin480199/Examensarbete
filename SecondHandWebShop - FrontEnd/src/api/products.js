@@ -61,3 +61,9 @@ export async function getProductsPaginated(page, size = 4) {
   if (!res.ok) throw new Error("Failed to load products");
   return res.json(); // returns a Page object
 }
+
+export async function markProductAsSold(id) {
+  await fetch(`${API_URL}/api/products/${id}/sold`, {
+    method: "PUT"
+});
+}

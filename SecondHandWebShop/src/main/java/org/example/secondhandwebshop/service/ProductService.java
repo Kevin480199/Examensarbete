@@ -63,6 +63,7 @@ public class ProductService {
         product.setImageUrl(request.getImageUrl());
         product.setPrice(request.getPrice());
         product.setCategory(request.getCategory());
+        product.setAvailable(request.isAvailable());
         product.setSeller(seller);
 
         return productRepository.save(product);
@@ -70,5 +71,14 @@ public class ProductService {
 
     public Optional<Product> findById(int id) {
         return productRepository.findById(id);
+    }
+
+    public void updateAvailable(Integer id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        product.setAvailable(false);
+
+        productRepository.save(product);
     }
 }

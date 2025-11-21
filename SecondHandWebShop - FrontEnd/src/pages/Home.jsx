@@ -1,6 +1,9 @@
 import Toast from "../components/Toast";
 import { useEffect, useRef, useState } from "react";
-import { getProductsPaginated } from "../api/products";
+import { getProductsPaginated, markProductAsSold } from "../api/products";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
+
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -8,6 +11,9 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [toast, setToast] = useState(null);
+  const { jwt } = useAuth();
+  const isLoggedIn = Boolean(jwt);
+  const navigate = useNavigate();
 
   const loaderRef = useRef(null);
   const observerRef = useRef(null);
@@ -35,7 +41,6 @@ export default function Home() {
       setLoading(true);
 
       const data = await getProductsPaginated(page - 1);
-
       setProducts(prev => [...prev, ...data.content]);
       if (data.last) setHasMore(false);
 
@@ -70,6 +75,19 @@ export default function Home() {
     }
   }, [loading, hasMore]);
 
+  async function handleBuy(id) {
+  try {
+    await markProductAsSold(id);
+
+    setToast({ message: "Product bought successfully!", type: "success" });
+      setTimeout(() => {
+        window.location.reload();
+        }, 1200);
+  } catch (err) {
+    setToast({ message: "Failed to mark as sold", type: "error" });
+  }
+}
+
   return (
     <div className="max-w-6xl mx-auto px-4 pt-8">
         {toast && (
@@ -99,14 +117,37 @@ export default function Home() {
               hover:shadow-md transition p-4 cursor-pointer
             "
           >
+            <div className="relative">
             <img
-              src={p.imageUrl}
-              alt={p.name}
-              className="w-full h-48 object-cover rounded-md mb-4"
+                src={p.imageUrl}
+                alt={p.name}
+                className="w-full h-48 object-cover rounded-md mb-4"
             />
+
+            {!p.available && (
+                <span className="
+                absolute inset-0 
+                bg-black/50 
+                flex items-center justify-center 
+                text-white text-xl font-bold
+                rounded-md
+                ">
+                SOLD
+                </span>
+            )}
+            </div>
+
             <h3 className="font-semibold text-lg text-gray-900">{p.name}</h3>
             <p className="text-600 mt-1">{p.description}</p>
             <p className="text-blue-600 font-bold mt-1">{p.price} kr</p>
+            {isLoggedIn && p.available && (
+            <button 
+            onClick={() => handleBuy(p.id)}   
+            className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
+                Buy</button>
+
+            )}
+
           </div>
         ))}
       </div>
