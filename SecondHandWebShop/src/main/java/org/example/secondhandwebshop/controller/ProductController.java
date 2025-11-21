@@ -5,6 +5,8 @@ import org.example.secondhandwebshop.dto.ProductRequest;
 import org.example.secondhandwebshop.model.Product;
 import org.example.secondhandwebshop.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/products")
@@ -22,14 +25,28 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @GetMapping
-    public List<Product> getProducts(@RequestParam(required = false) String name) {
+    @GetMapping("/search")
+    public List<Product> getSearchProducts(@RequestParam(required = false) String name) {
         if (name != null && !name.isEmpty()) {
             // Return a person by name
             return productService.findByName(name);
 
         }
         return productService.findAll();
+    }
+
+    @GetMapping
+    public Page<Product> getProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return productService.findAll(PageRequest.of(page, size));
+    }
+
+    @GetMapping("/{id}")
+    public Optional<Product> getProduct(@PathVariable int id) {
+
+        return productService.findById(id);
     }
 
     @PostMapping
@@ -59,6 +76,13 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PutMapping("/{id}/sold")
+    public ResponseEntity<?> markAsSold(@PathVariable Integer id) {
+        productService.updateAvailable(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Integer id) {

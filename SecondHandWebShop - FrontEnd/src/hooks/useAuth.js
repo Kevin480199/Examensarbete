@@ -22,8 +22,17 @@ function decodeUserFromToken(token) {
 
 // -------- Auth Provider --------
 export function AuthProvider({ children }) {
-  const [jwt, setJwt] = useState(() => localStorage.getItem("jwt"));
-  const [user, setUser] = useState(() => decodeUserFromToken(localStorage.getItem("jwt")));
+  //const [jwt, setJwt] = useState(() => localStorage.getItem("jwt"));
+  const [jwt, setJwt] = useState(() => {
+  const stored = localStorage.getItem("jwt");
+  return stored && stored !== "null" ? stored : null;
+});
+  //const [user, setUser] = useState(() => decodeUserFromToken(localStorage.getItem("jwt")));
+  const [user, setUser] = useState(() => {
+  const stored = localStorage.getItem("jwt");
+  return decodeUserFromToken(stored && stored !== "null" ? stored : null);
+});
+
 
   // Keep user in sync when jwt changes
   useEffect(() => {

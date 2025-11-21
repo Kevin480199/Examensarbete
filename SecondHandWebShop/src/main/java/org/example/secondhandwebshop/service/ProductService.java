@@ -5,10 +5,11 @@ import org.example.secondhandwebshop.dto.ProductRequest;
 import org.example.secondhandwebshop.model.Product;
 import org.example.secondhandwebshop.model.User;
 import org.example.secondhandwebshop.repository.ProductRepository;
-import org.example.secondhandwebshop.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -23,6 +24,10 @@ public class ProductService {
 
     public List<Product> findAll() {
         return productRepository.findAll();
+    }
+
+    public Page<Product> findAll(Pageable pageable) {
+        return productRepository.findAll(pageable);
     }
 
     public List<Product> findByName(String name) {
@@ -58,8 +63,22 @@ public class ProductService {
         product.setImageUrl(request.getImageUrl());
         product.setPrice(request.getPrice());
         product.setCategory(request.getCategory());
+        product.setAvailable(request.isAvailable());
         product.setSeller(seller);
 
         return productRepository.save(product);
+    }
+
+    public Optional<Product> findById(int id) {
+        return productRepository.findById(id);
+    }
+
+    public void updateAvailable(Integer id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        product.setAvailable(false);
+
+        productRepository.save(product);
     }
 }
