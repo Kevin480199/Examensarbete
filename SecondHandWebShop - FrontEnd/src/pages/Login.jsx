@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import useAuth from "../hooks/useAuth";
@@ -5,7 +6,8 @@ import useAuth from "../hooks/useAuth";
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
-
+  const [toast, setToast] = useState(null);
+  
   async function handleGoogleLogin(idToken) {
     try {
       console.log("Sending Google ID token to backend:", idToken);
@@ -22,31 +24,36 @@ export default function Login() {
 
       console.log("JWT received:", jwt);
 
-      login(jwt); // Save JWT in global state + localStorage
-
-      navigate("/"); // Redirect to home page
+      login(jwt);
+      navigate("/");
     } catch (error) {
       console.error("Login error:", error);
     }
   }
 
   return (
-    <div style={styles.container}>
-      <h1>Login</h1>
-      <p>Please sign in using your Google account</p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="w-full max-w-md bg-white p-10 rounded-2xl shadow-lg border border-gray-100">
+        {toast && (
+        <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast(null)}
+        />
+        )}
 
-      {/* Google Login Button */}
-      <GoogleLoginButton onLogin={handleGoogleLogin} />
+        <h1 className="text-3xl font-semibold text-gray-800 text-center">
+          Welcome Back
+        </h1>
+
+        <p className="text-gray-500 text-center mt-2">
+          Sign in using your Google account
+        </p>
+
+        <div className="mt-8">
+          <GoogleLoginButton onLogin={handleGoogleLogin} />
+        </div>
+      </div>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    marginTop: "80px",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    gap: "20px",
-  }
-};

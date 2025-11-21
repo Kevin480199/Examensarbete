@@ -3,21 +3,22 @@ import { getAllProducts, deleteProduct } from "../api/products";
 import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
-
 export default function MyListings() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { user, jwt, isLoggedIn } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
+  const [toast, setToast] = useState(null);
+
 
   const handleOnClick = async (id) => {
     try {
-    await deleteProduct(id);
-    setProducts(prev => prev.filter(p => p.id !== id));
-  } catch (err) {
-    console.error(err);
-  }
+      await deleteProduct(id);
+      setProducts(prev => prev.filter(p => p.id !== id));
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
@@ -25,7 +26,6 @@ export default function MyListings() {
       try {
         const data = await getAllProducts();
         setProducts(data.content.filter(product => product.seller?.id === user.id));
-        console.log(products)
       } catch (err) {
         setError(err.message);
       } finally {
@@ -33,41 +33,67 @@ export default function MyListings() {
       }
     }
     loadProducts();
-  }, []);
+  }, [user]);
 
-  if (loading) return <h2>Loading products...</h2>;
-  if (error) return <h2>Error: {error}</h2>;
+  if (loading)
+    return <h2 className="text-center text-xl font-semibold mt-10">Loading products...</h2>;
+
+  if (error)
+    return <h2 className="text-center text-xl font-semibold text-red-500 mt-10">Error: {error}</h2>;
 
   return (
-    <div style={styles.container}>
-      <h1>My Products</h1>
-      <div style={styles.grid}>
-        {products.map(product => (
-          <div key={product.id} style={styles.card}>
-            <h2>{product.name}</h2>
-            <img src={`${product.imageUrl}`} alt="" width={250}/>
-            <p>{product.description}</p>
-            <p><strong>{product.price} kr</strong></p>
-            <button onClick={() => handleOnClick(product.id)}>Delete</button>
-            <button onClick={() => navigate(`/edit/${product.id}`)}>Edit</button>
-          </div>
-        ))}
-      </div>
+    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-6">My Listings</h1>
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+
+      {products.length === 0 ? (
+        <p className="text-gray-600 text-lg">You have no products listed.</p>
+      ) : (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {products.map(product => (
+            <div
+              key={product.id}
+              className="bg-white rounded-xl shadow hover:shadow-lg transition p-4 border border-gray-200"
+            >
+              <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
+
+              <img
+                src={product.imageUrl}
+                alt=""
+                className="w-full h-48 object-cover rounded-lg mb-3"
+              />
+
+              <p className="text-gray-700 mb-2">{product.description}</p>
+
+              <p className="text-lg font-bold text-blue-600 mb-4">
+                {product.price} kr
+              </p>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => handleOnClick(product.id)}
+                  className="flex-1 bg-red-500 hover:bg-red-600 text-white font-medium py-2 rounded-lg transition"
+                >
+                  Delete
+                </button>
+
+                <button
+                  onClick={() => navigate(`/edit/${product.id}`)}
+                  className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-lg transition"
+                >
+                  Edit
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
-
-const styles = {
-  container: { padding: "20px" },
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-    gap: "20px"
-  },
-  card: {
-    padding: "15px",
-    border: "1px solid #ccc",
-    borderRadius: "8px",
-    background: "#fff"
-  }
-};

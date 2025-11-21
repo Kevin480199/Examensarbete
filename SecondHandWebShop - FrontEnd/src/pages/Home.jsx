@@ -1,21 +1,23 @@
+import Toast from "../components/Toast";
 import { useEffect, useRef, useState } from "react";
 import { getProductsPaginated } from "../api/products";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
-  const [page, setPage] = useState(1);   // scrolling loads page 1
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [toast, setToast] = useState(null);
 
   const loaderRef = useRef(null);
   const observerRef = useRef(null);
 
-  // 1️⃣ Load first page manually BEFORE observer
+  // Load page 0 manually
   useEffect(() => {
     async function loadInitial() {
       setLoading(true);
       const data = await getProductsPaginated(0);
-
+    
       setProducts(data.content);
       if (data.last) setHasMore(false);
 
@@ -24,9 +26,9 @@ export default function Home() {
     loadInitial();
   }, []);
 
-  // 2️⃣ Load page N (N = 1, 2, 3…) when page changes
+  // Load page N when page changes (page - 1)
   useEffect(() => {
-    if (page === 1) return; // we manually loaded page 0
+    if (page === 1) return;
     if (!hasMore || loading) return;
 
     async function loadNext() {
@@ -43,10 +45,9 @@ export default function Home() {
     loadNext();
   }, [page]);
 
-  // 3️⃣ Attach observer AFTER first load is complete
+  // Attach observer after loading
   useEffect(() => {
-    if (loading) return; // wait until layout is stable
-    if (!hasMore) return;
+    if (loading || !hasMore) return;
 
     if (observerRef.current) observerRef.current.disconnect();
 
@@ -59,7 +60,7 @@ export default function Home() {
       },
       {
         root: null,
-        rootMargin: "100px",
+        rootMargin: "150px",
         threshold: 0,
       }
     );
@@ -67,27 +68,68 @@ export default function Home() {
     if (loaderRef.current) {
       observerRef.current.observe(loaderRef.current);
     }
-  }, [loading, hasMore]); // ← KEY! attach only after loading finishes
+  }, [loading, hasMore]);
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>All Products</h2>
+    <div className="max-w-6xl mx-auto px-4 pt-8">
+        {toast && (
+        <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast(null)}
+        />
+        )}
 
-      <div className="grid">
+      {/* Title */}
+      <h2 className="text-3xl font-bold mb-6 text-gray-800">
+        All Products
+      </h2>
+
+      {/* Product Grid */}
+      <div className="
+        grid 
+        grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 
+        gap-6
+      ">
         {products.map(p => (
-          <div key={p.id} className="card">
-            <img src={p.imageUrl} alt="" width={250} />
-            <h3>{p.name}</h3>
-            <p>{p.price} kr</p>
+          <div
+            key={p.id}
+            className="
+              bg-white border rounded-xl shadow-sm 
+              hover:shadow-md transition p-4 cursor-pointer
+            "
+          >
+            <img
+              src={p.imageUrl}
+              alt={p.name}
+              className="w-full h-48 object-cover rounded-md mb-4"
+            />
+            <h3 className="font-semibold text-lg text-gray-900">{p.name}</h3>
+            <p className="text-600 mt-1">{p.description}</p>
+            <p className="text-blue-600 font-bold mt-1">{p.price} kr</p>
           </div>
         ))}
       </div>
 
-      {loading && <p>Loading...</p>}
-      {hasMore && <div style={{ height: `${window.innerHeight}px` }} />}
-      <div ref={loaderRef} style={{ height: "1px", background: "yellow" }} />
+      {/* Loading indicator */}
+      {loading && (
+        <div className="text-center py-6 text-gray-600 font-medium">
+          Loading...
+        </div>
+      )}
 
-      {!hasMore && <p>No more products</p>}
+      {/* Spacer to push loader below fold */}
+      {hasMore && <div style={{ height: `${window.innerHeight}px` }} />}
+
+      {/* Loader target */}
+      <div ref={loaderRef} className="h-2 bg-transparent" />
+
+      {/* End message */}
+      {!hasMore && (
+        <p className="text-center text-gray-500 mt-6">
+          No more products
+        </p>
+      )}
     </div>
   );
 }

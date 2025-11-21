@@ -50,7 +50,10 @@ export async function updateProduct(id, product) {
   });
 
   if (!response.ok) throw new Error("Failed to update product");
-  return response.json();
+   // Read raw text because backend sends empty body
+  const text = await response.text();
+  if (!text) return {}; // ← prevent JSON crash
+  return JSON.parse(text);
 }
 
 export async function getProductsPaginated(page, size = 4) {
