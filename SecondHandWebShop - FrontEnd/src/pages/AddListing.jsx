@@ -14,7 +14,8 @@ export default function AddListing() {
     description: "",
     price: "",
     imageUrl: "",
-    category: ""
+    category: "",
+    available: true
   });
 
   async function handleImageUpload(e) {

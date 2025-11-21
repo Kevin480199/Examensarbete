@@ -1,3 +1,4 @@
+import "./globals";
 import {createRoot} from 'react-dom/client';
 import Navbar from './components/Navbar';
 import { BrowserRouter, Route, Routes } from "react-router-dom";

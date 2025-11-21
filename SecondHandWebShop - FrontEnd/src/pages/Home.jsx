@@ -3,11 +3,12 @@ import { useEffect, useRef, useState } from "react";
 import { getProductsPaginated, markProductAsSold } from "../api/products";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import SearchBar from "../components/SearchBar";
 
 
 export default function Home() {
   const [products, setProducts] = useState([]);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [toast, setToast] = useState(null);
@@ -22,7 +23,7 @@ export default function Home() {
 
   const loaderRef = useRef(null);
   const observerRef = useRef(null);
-
+ /*
   // Load page 0 manually
   useEffect(() => {
     async function loadInitial() {
@@ -36,10 +37,10 @@ export default function Home() {
     }
     loadInitial();
   }, []);
-
+*/
   // Load page N when page changes (page - 1)
   useEffect(() => {
-    if (page === 1) return;
+    if (page === 0) return;
     if (!hasMore || loading) return;
 
     async function loadNext() {
@@ -116,10 +117,10 @@ async function confirmBuy() {
             onClose={() => setToast(null)}
         />
         )}
-
+        <SearchBar setProducts={setProducts} setHasMore={setHasMore} setPage={setPage}/>
       {/* Title */}
       <h2 className="text-3xl font-bold mb-6 text-gray-800">
-        All Products
+        Products
       </h2>
 
       {/* Product Grid */}
@@ -128,7 +129,7 @@ async function confirmBuy() {
         grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 
         gap-6
       ">
-        {products.map(p => (
+        { Array.isArray(products) && products.map(p => (
           <div
             key={p.id}
             className="

@@ -1,3 +1,4 @@
+import axios from "axios";
 const API_URL = "http://localhost:8080"; // change to your backend
 
 export async function getAllProducts() {
@@ -67,3 +68,22 @@ export async function markProductAsSold(id) {
     method: "PUT"
 });
 }
+
+export async function getByName(name) {
+  try {
+    if (!name || name.trim() === "") {
+      const response = await axios.get("http://localhost:8080/api/products");
+      return response.data.content; // because this endpoint returns a Page
+    }
+
+    const response = await axios.get("http://localhost:8080/api/products/search", {
+      params: { name }
+    });
+
+    return response.data;
+  } catch (err) {
+    console.error("Search request failed", err);
+    throw new Error("Failed to load products");
+  }
+}
+

@@ -24,9 +24,9 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
-    /*
-    @GetMapping
-    public List<Product> getProducts(@RequestParam(required = false) String name) {
+
+    @GetMapping("/search")
+    public List<Product> getSearchProducts(@RequestParam(required = false) String name) {
         if (name != null && !name.isEmpty()) {
             // Return a person by name
             return productService.findByName(name);
@@ -34,7 +34,7 @@ public class ProductController {
         }
         return productService.findAll();
     }
-     */
+
     @GetMapping
     public Page<Product> getProducts(
             @RequestParam(defaultValue = "0") int page,
