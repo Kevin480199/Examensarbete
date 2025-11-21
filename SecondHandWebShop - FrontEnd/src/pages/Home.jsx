@@ -14,6 +14,11 @@ export default function Home() {
   const { jwt } = useAuth();
   const isLoggedIn = Boolean(jwt);
   const navigate = useNavigate();
+  const [confirmModal, setConfirmModal] = useState({
+  open: false,
+  productId: null,
+});
+
 
   const loaderRef = useRef(null);
   const observerRef = useRef(null);
@@ -75,18 +80,32 @@ export default function Home() {
     }
   }, [loading, hasMore]);
 
-  async function handleBuy(id) {
+  
+
+function openConfirmModal(id) {
+  setConfirmModal({
+    open: true,
+    productId: id
+  });
+}
+
+async function confirmBuy() {
   try {
-    await markProductAsSold(id);
+    await markProductAsSold(confirmModal.productId);
 
     setToast({ message: "Product bought successfully!", type: "success" });
-      setTimeout(() => {
+
+    setTimeout(() => {
         window.location.reload();
         }, 1200);
+    
   } catch (err) {
     setToast({ message: "Failed to mark as sold", type: "error" });
+  } finally {
+    setConfirmModal({ open: false, productId: null });
   }
 }
+
 
   return (
     <div className="max-w-6xl mx-auto px-4 pt-8">
@@ -142,7 +161,7 @@ export default function Home() {
             <p className="text-blue-600 font-bold mt-1">{p.price} kr</p>
             {isLoggedIn && p.available && (
             <button 
-            onClick={() => handleBuy(p.id)}   
+            onClick={() => openConfirmModal(p.id)}  
             className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
                 Buy</button>
 
@@ -171,6 +190,38 @@ export default function Home() {
           No more products
         </p>
       )}
+      {confirmModal.open && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
+    <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6">
+
+      <h2 className="text-xl font-bold text-gray-900 mb-4">
+        Confirm Purchase
+      </h2>
+
+      <p className="text-gray-700 mb-6">
+        Are you sure you want to buy this product?
+      </p>
+
+      <div className="flex justify-end gap-3">
+        <button
+          onClick={() => setConfirmModal({ open: false, productId: null })}
+          className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition"
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={confirmBuy}
+          className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition"
+        >
+          Yes, Buy
+        </button>
+      </div>
+
+    </div>
+  </div>
+)}
+
     </div>
   );
 }

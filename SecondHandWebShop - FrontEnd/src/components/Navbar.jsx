@@ -1,10 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import useAuth from "../hooks/useAuth";
 
 export default function Navbar() {
   const { jwt, logout } = useAuth();
   const navigate = useNavigate();
   const isLoggedIn = Boolean(jwt);
+  const [toast, setToast] = useState(null);
 
   function handleLogout() {
     logout();        // clears JWT, etc.
@@ -60,7 +62,7 @@ export default function Navbar() {
           </Link>
         ) : (
           <button
-            onClick={logout}
+            onClick={handleLogout}
             className="px-4 py-1.5 border border-red-400 text-red-400 rounded-lg hover:bg-red-500 hover:text-white transition font-medium"
           >
             Logout

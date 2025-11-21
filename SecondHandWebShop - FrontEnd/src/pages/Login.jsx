@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import useAuth from "../hooks/useAuth";
+import Toast from "../components/Toast";
 
 export default function Login() {
   const navigate = useNavigate();
