@@ -4,6 +4,7 @@ import { getProductsPaginated, markProductAsSold } from "../api/products";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import SearchBar from "../components/SearchBar";
+import { addFavorite, getFavorites, removeFavorite } from "../api/favorites";
 
 
 export default function Home() {
@@ -12,7 +13,9 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [toast, setToast] = useState(null);
-  const { jwt } = useAuth();
+  const { jwt, user } = useAuth();
+  const userId = user?.id;
+  const [favorites, setFavorites] = useState([]);
   const isLoggedIn = Boolean(jwt);
   const navigate = useNavigate();
   const [confirmModal, setConfirmModal] = useState({
@@ -23,21 +26,7 @@ export default function Home() {
 
   const loaderRef = useRef(null);
   const observerRef = useRef(null);
- /*
-  // Load page 0 manually
-  useEffect(() => {
-    async function loadInitial() {
-      setLoading(true);
-      const data = await getProductsPaginated(0);
-    
-      setProducts(data.content);
-      if (data.last) setHasMore(false);
 
-      setLoading(false);
-    }
-    loadInitial();
-  }, []);
-*/
   // Load page N when page changes (page - 1)
   useEffect(() => {
     if (page === 0) return;
@@ -106,6 +95,33 @@ async function confirmBuy() {
     setConfirmModal({ open: false, productId: null });
   }
 }
+    useEffect(() => {
+        async function loadFavorites() {
+            if (!userId) return;
+            const favs = await getFavorites(userId);
+            setFavorites(favs.map(f => f.product.id)); // store product IDs only
+        }
+        loadFavorites();
+        }, [userId]);
+
+async function toggleFavorite(productId) {
+  if (!isLoggedIn) return alert("You must log in");
+
+  try {
+    const isFav = favorites.includes(productId);
+
+    if (isFav) {
+      await removeFavorite(userId, productId);
+      setFavorites(prev => prev.filter(id => id !== productId));
+    } else {
+      await addFavorite(userId, productId);
+      setFavorites(prev => [...prev, productId]);
+    }
+
+  } catch (err) {
+    console.error("Failed to toggle favorite:", err);
+  }
+}
 
 
   return (
@@ -159,7 +175,18 @@ async function confirmBuy() {
 
             <h3 className="font-semibold text-lg text-gray-900">{p.name}</h3>
             <p className="text-600 mt-1">{p.description}</p>
-            <p className="text-blue-600 font-bold mt-1">{p.price} kr</p>
+            <div className="flex items-center justify-between mt-2">
+            <p className="text-blue-600 font-bold">{p.price} kr</p>
+
+            {isLoggedIn && <button
+                onClick={() => toggleFavorite(p.id)}
+                className="bg-white p-2 rounded-full shadow hover:bg-gray-100 transition"
+            >
+                {favorites.includes(p.id) ? "❤️" : "🤍"}
+            </button>}
+            </div>
+
+
             {isLoggedIn && p.available && (
             <button 
             onClick={() => openConfirmModal(p.id)}  

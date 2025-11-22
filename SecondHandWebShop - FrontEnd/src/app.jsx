@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import MyListings from "./pages/MyListings";
 import AddListing from "./pages/AddListing";
 import EditProduct from "./pages/EditProduct";
+import Favorites from "./pages/Favorites"
 import { AuthProvider } from './hooks/useAuth';
 
 function App(){
@@ -31,6 +32,7 @@ root.render(
             <Route path="/add" element={<AddListing />} />
             <Route path="/my-listings" element={<MyListings />} />
             <Route path="/edit/:id" element={<EditProduct />} />
+            <Route path="/favorites" element={<Favorites />} />
         </Routes>
     </AuthProvider>
     
