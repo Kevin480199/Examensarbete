@@ -47,7 +47,20 @@ export default function Navbar() {
             >
               My Listings
             </Link>
-          </>
+            <Link
+              to="/favorites" 
+              className="text-white hover:text-blue-400 transition font-medium"
+              >
+                Favorites
+              </Link>
+          
+            <Link
+            to="/recommendations"
+            className="text-white hover:text-blue-400 transition font-medium"
+            >
+                Recommendations 
+            </Link>
+            </>
         )}
       </div>
 
