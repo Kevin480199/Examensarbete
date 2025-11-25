@@ -33,6 +33,7 @@ public class AuthService {
                     newUser.setName((String) payload.get("name"));
                     newUser.setPictureUrl((String) payload.get("picture"));
                     newUser.setGoogleId((String) payload.get("sub"));
+                    newUser.setAdmin("user");
                     return userRepository.save(newUser);
                 });
 

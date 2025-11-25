@@ -5,6 +5,8 @@ import org.example.secondhandwebshop.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -14,6 +16,10 @@ public class UserService {
     public User findById(Integer id) {
         return userRepository.findById(id)
                 .orElse(null); // or throw exception if you prefer
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 }
 

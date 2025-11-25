@@ -51,7 +51,7 @@ export default function Login() {
           Sign in using your Google account
         </p>
 
-        <div className="mt-8">
+        <div className="mt-8 flex justify-center">
           <GoogleLoginButton onLogin={handleGoogleLogin} />
         </div>
       </div>

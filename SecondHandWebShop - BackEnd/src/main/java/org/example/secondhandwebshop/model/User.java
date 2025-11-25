@@ -20,6 +20,16 @@ public class User {
 
     private String pictureUrl;    // User profile image from Google
 
+    private String admin;
+
+    public String getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(String admin) {
+        this.admin = admin;
+    }
+
     public Integer getId() {
         return id;
     }
