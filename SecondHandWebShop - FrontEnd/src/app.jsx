@@ -11,6 +11,7 @@ import EditProduct from "./pages/EditProduct";
 import Favorites from "./pages/Favorites"
 import { AuthProvider } from './hooks/useAuth';
 import Recommendations from "./pages/Recommendations";
+import AdminPage from "./pages/AdminPage";
 
 function App(){
     
@@ -35,6 +36,7 @@ root.render(
             <Route path="/edit/:id" element={<EditProduct />} />
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/recommendations" element={<Recommendations />} />
+            <Route path="/adminpage" element={<AdminPage/>}/>
         </Routes>
     </AuthProvider>
     

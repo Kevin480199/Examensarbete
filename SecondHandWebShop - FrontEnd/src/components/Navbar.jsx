@@ -3,10 +3,9 @@ import { useState } from "react";
 import useAuth from "../hooks/useAuth";
 
 export default function Navbar() {
-  const { jwt, logout } = useAuth();
+  const { jwt, logout, user } = useAuth();
   const navigate = useNavigate();
   const isLoggedIn = Boolean(jwt);
-
   const [toast, setToast] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -59,6 +58,9 @@ export default function Navbar() {
               <Link to="/recommendations" className="hover:text-blue-400 transition font-medium">
                 Recommendations
               </Link>
+              {user?.admin === "admin" && <Link to="/adminpage" className="hover:text-blue-400 transition font-medium">
+                Admin page
+              </Link> }
             </>
           )}
         </div>
@@ -129,6 +131,17 @@ export default function Navbar() {
               >
                 Recommendations
               </Link>
+
+              {user?.admin === "admin" && (
+                <Link
+                    to="/adminpage"
+                    className="block hover:text-blue-400 transition font-medium"
+                    onClick={() => setMenuOpen(false)}
+                >
+                    Admin Page
+                </Link>
+                )}
+
             </>
           )}
 

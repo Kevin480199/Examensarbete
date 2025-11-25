@@ -13,6 +13,7 @@ function decodeUserFromToken(token) {
       id: decoded.id ?? null,
       email: decoded.sub ?? decoded.email ?? null,
       name: decoded.name ?? null,
+      admin: decoded.admin ?? null,
     };
   } catch (err) {
     console.error("Invalid token:", err);
