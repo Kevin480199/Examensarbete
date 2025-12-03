@@ -38,8 +38,12 @@ public class ProductController {
     @GetMapping
     public Page<Product> getProducts(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "all") String category
     ) {
+        if(!category.equals("all")){
+            return productService.findByCategory(PageRequest.of(page,size), category);
+        }
         return productService.findAll(PageRequest.of(page, size));
     }
 
