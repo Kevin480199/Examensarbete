@@ -57,8 +57,8 @@ export async function updateProduct(id, product) {
   return JSON.parse(text);
 }
 
-export async function getProductsPaginated(page, size = 4) {
-  const res = await fetch(`http://localhost:8080/api/products?page=${page}&size=${size}`);
+export async function getProductsPaginated(page, category, size = 4) {
+  const res = await fetch(`http://localhost:8080/api/products?page=${page}&size=${size}&category=${category}`);
   if (!res.ok) throw new Error("Failed to load products");
   return res.json(); // returns a Page object
 }

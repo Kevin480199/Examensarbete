@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import SearchBar from "../components/SearchBar";
 import { addFavorite, getFavorites, removeFavorite } from "../api/favorites";
+import Filter from "../components/Filter";
 
 
 export default function Home() {
@@ -18,6 +19,7 @@ export default function Home() {
   const [favorites, setFavorites] = useState([]);
   const isLoggedIn = Boolean(jwt);
   const navigate = useNavigate();
+  const [category, setCategory] = useState('all');
   const [confirmModal, setConfirmModal] = useState({
   open: false,
   productId: null,
@@ -35,7 +37,7 @@ export default function Home() {
     async function loadNext() {
       setLoading(true);
 
-      const data = await getProductsPaginated(page - 1);
+      const data = await getProductsPaginated(page - 1, category);
       setProducts(prev => [...prev, ...data.content]);
       if (data.last) setHasMore(false);
 
@@ -44,6 +46,13 @@ export default function Home() {
 
     loadNext();
   }, [page]);
+
+  useEffect(() => {
+  // Reset products & page when category changes
+  setProducts([]);
+  setPage(0);
+  setHasMore(true);
+}, [category]);
 
   // Attach observer after loading
   useEffect(() => {
@@ -122,6 +131,7 @@ async function toggleFavorite(productId) {
     console.error("Failed to toggle favorite:", err);
   }
 }
+  
 
 
   return (
@@ -134,6 +144,7 @@ async function toggleFavorite(productId) {
         />
         )}
         <SearchBar setProducts={setProducts} setHasMore={setHasMore} setPage={setPage}/>
+        <Filter setCategory={setCategory}/>
       {/* Title */}
       <h2 className="text-3xl font-bold mb-6 text-gray-800">
         Products
