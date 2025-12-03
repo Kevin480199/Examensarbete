@@ -2,6 +2,8 @@ package org.example.secondhandwebshop.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 public class Product {
 
@@ -24,6 +26,8 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "seller_id")
     private User seller;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+    private List<Favorite> favorites;
 
     public boolean isAvailable() {
         return available;

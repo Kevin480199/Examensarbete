@@ -31,7 +31,7 @@ export async function deleteProduct(id) {
     method: "DELETE"
   });
 
-  if (!response.ok) throw new Error("Failed to create product");
+  if (!response.ok) throw new Error("Failed to delete product");
   // If the backend returns empty body → don't parse JSON
   const text = await response.text();
   return text ? JSON.parse(text) : null
